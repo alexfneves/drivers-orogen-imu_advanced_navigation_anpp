@@ -1,0 +1,74 @@
+name "imu_advanced_navigation_anpp"
+version "0.1"
+
+using_task_library 'iodrivers_base'
+
+# If this project uses data types that are defined in other oroGen projects,
+# these projects should be imported there as well.
+import_types_from "std"
+import_types_from "base"
+import_types_from "gps_base"
+
+using_library 'imu_advanced_navigation_anpp'
+import_types_from "imu_advanced_navigation_anpp/Configuration.hpp"
+import_types_from "Periods.hpp"
+
+# The driver task
+task_context "Task" do
+    subclasses "iodrivers_base::Task"
+
+    # The IMU configuration
+    property "configuration", "/imu_advanced_navigation_anpp/Configuration"
+
+    # Configuration of update periods
+    property "periods", "/imu_advanced_navigation_anpp/Periods"
+
+    # Name of the IMU frame (i.e. "the body")
+    property 'imu_frame', '/std/string'
+
+    # Name of the world frame
+    property 'nwu_frame', '/std/string'
+
+    # The world-relative RBS
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    #
+    # It is the pose of the IMU in the NWU frame
+    output_port "nwu_pose_samples", "/base/samples/RigidBodyState"
+
+    # Body-relative information
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    #
+    # It is the velocities of the body in the body-fixed frame
+    output_port "body_velocity_samples", "/base/samples/RigidBodyState"
+
+    # Raw sensors
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    #
+    # It is the velocities of the body in the body-fixed frame
+    output_port "sensors_samples", "/base/samples/RigidBodyState"
+
+    # GNSS solution
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    output_port "gps_solution_samples", "/gps_base/Solution"
+
+    # GNSS solution quality
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    output_port "gps_solution_quality_samples", "/gps_base/SolutionQuality"
+
+    # GNSS satellite information
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    output_port "gps_satellite_info_samples", "/gps_base/SatelliteInfo"
+end
+

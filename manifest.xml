@@ -1,0 +1,18 @@
+<package>
+  <description brief="Integration of the Advanced Navigation ANPP IMUs driver into oroGen">
+  </description>
+  <author>Sylvain Joyeux/sylvain.joyeux@13robotics.com</author>
+  <license>BSD</license>
+  <depend package="base/cmake" />
+  <depend package="base/orogen/types" />
+  <depend package="drivers/orogen/iodrivers_base" />
+  <depend package="drivers/orogen/gps_base" />
+  <depend package="drivers/imu_advanced_navigation_anpp" />
+  <!--
+   To add any dependencies use the depend tag
+  <depend package="dummy-dependency-0" />
+	...
+  <depend package="dummy-dependency-n-1" />
+  <depend package="dummy-dependency-n" />
+  -->
+</package>
