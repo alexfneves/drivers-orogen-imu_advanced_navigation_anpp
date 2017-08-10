@@ -39,6 +39,8 @@ bool Task::configureHook()
     driver->setConfiguration(_configuration.get());
     driver->setUseDeviceTime(_use_device_time.get());
 
+    driver->setStatusPeriod(1);
+
     mPeriods = _periods.get();
     driver->setOrientationPeriod(mPeriods.world_pose);
     driver->setNEDVelocityPeriod(mPeriods.world_pose);
@@ -73,21 +75,39 @@ void Task::processIO()
     if (period <= 0)
         return;
 
+    if (period == 1)
+    {
+        mStatus = mDriver->getIMUStatus();
+        _status.write(mStatus);
+    }
+
     if (period == mPeriods.world_pose)
     {
         base::samples::RigidBodyState rbs = mDriver->getWorldRigidBodyState();
         rbs.sourceFrame = _imu_frame.get();
         rbs.targetFrame = _nwu_frame.get();
-        _nwu_pose_samples.write(rbs);
+        if (!mStatus.navigation_initialized)
+        {
+            rbs.invalidatePosition();
+            rbs.invalidateVelocity();
+        }
+        if (mStatus.orientation_initialized)
+            _nwu_pose_samples.write(rbs);
     }
     if (period == mPeriods.body_velocity)
     {
         base::samples::RigidBodyState rbs = mDriver->getBodyRigidBodyState();
         rbs.sourceFrame = _imu_frame.get();
         rbs.targetFrame = _imu_frame.get();
-        _body_velocity_samples.write(rbs);
+        if (!mStatus.navigation_initialized)
+        {
+            rbs.invalidatePosition();
+            rbs.invalidateVelocity();
+        }
+        if (mStatus.orientation_initialized)
+            _body_velocity_samples.write(rbs);
     }
-    if (period == mPeriods.acceleration)
+    if (mStatus.navigation_initialized && period == mPeriods.acceleration)
     {
         base::samples::RigidBodyAcceleration accel = mDriver->getAcceleration();
         _acceleration_samples.write(accel);
