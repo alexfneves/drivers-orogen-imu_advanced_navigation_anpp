@@ -17,6 +17,11 @@ import_types_from "Periods.hpp"
 task_context "Task" do
     subclasses "iodrivers_base::Task"
 
+    # Whether timestamping should be using the device-reported time of the local
+    # CPU time. Use the device only if it is connected to a time source (i.e. a
+    # GPS)
+    property 'use_device_time', 'bool', false
+
     # The IMU configuration
     property "configuration", "/imu_advanced_navigation_anpp/Configuration"
 
@@ -45,13 +50,19 @@ task_context "Task" do
     # It is the velocities of the body in the body-fixed frame
     output_port "body_velocity_samples", "/base/samples/RigidBodyState"
 
+    # Acceleration data
+    #
+    # The period at which this value is generated is controlled by the periods
+    # property
+    output_port "acceleration_samples", "/base/samples/RigidBodyAcceleration"
+
     # Raw sensors
     #
     # The period at which this value is generated is controlled by the periods
     # property
     #
     # It is the velocities of the body in the body-fixed frame
-    output_port "sensors_samples", "/base/samples/RigidBodyState"
+    output_port "imu_sensors_samples", "/base/samples/IMUSensors"
 
     # GNSS solution
     #

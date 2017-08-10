@@ -6,6 +6,7 @@
 #include "imu_advanced_navigation_anpp/TaskBase.hpp"
 
 namespace imu_advanced_navigation_anpp{
+    class Driver;
 
     /*! \class Task
      * \brief The task context provides and requires services. It uses an ExecutionEngine to perform its functions.
@@ -25,8 +26,10 @@ namespace imu_advanced_navigation_anpp{
     {
 	friend class TaskBase;
     protected:
+        void processIO();
 
-
+        Periods mPeriods;
+        Driver* mDriver;
 
     public:
         /** TaskContext constructor for Task
