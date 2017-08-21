@@ -42,6 +42,7 @@ bool Task::configureHook()
     driver->setStatusPeriod(1);
 
     mPeriods = _periods.get();
+    driver->setPositionPeriod(mPeriods.world_pose);
     driver->setOrientationPeriod(mPeriods.world_pose);
     driver->setNEDVelocityPeriod(mPeriods.world_pose);
     driver->setAccelerationPeriod(mPeriods.acceleration);
@@ -52,6 +53,7 @@ bool Task::configureHook()
     driver->setGNSSPeriod(mPeriods.gnss_info);
     driver->setGNSSSatelliteSummaryPeriod(mPeriods.gnss_info);
     driver->setGNSSSatelliteDetailsPeriod(mPeriods.gnss_satellite_info);
+    driver->setNorthSeekingInitializationStatusPeriod(mPeriods.north_seeking);
 
     return true;
 }
@@ -86,12 +88,12 @@ void Task::processIO()
         base::samples::RigidBodyState rbs = mDriver->getWorldRigidBodyState();
         rbs.sourceFrame = _imu_frame.get();
         rbs.targetFrame = _nwu_frame.get();
-        if (!mStatus.navigation_initialized)
+        if (!mStatus.isNavigationInitialized())
         {
             rbs.invalidatePosition();
             rbs.invalidateVelocity();
         }
-        if (mStatus.orientation_initialized)
+        if (mStatus.isOrientationInitialized())
             _nwu_pose_samples.write(rbs);
     }
     if (period == mPeriods.body_velocity)
@@ -99,15 +101,15 @@ void Task::processIO()
         base::samples::RigidBodyState rbs = mDriver->getBodyRigidBodyState();
         rbs.sourceFrame = _imu_frame.get();
         rbs.targetFrame = _imu_frame.get();
-        if (!mStatus.navigation_initialized)
+        if (!mStatus.isNavigationInitialized())
         {
             rbs.invalidatePosition();
             rbs.invalidateVelocity();
         }
-        if (mStatus.orientation_initialized)
+        if (mStatus.isOrientationInitialized())
             _body_velocity_samples.write(rbs);
     }
-    if (mStatus.navigation_initialized && period == mPeriods.acceleration)
+    if (mStatus.isNavigationInitialized() && period == mPeriods.acceleration)
     {
         base::samples::RigidBodyAcceleration accel = mDriver->getAcceleration();
         _acceleration_samples.write(accel);

@@ -10,8 +10,10 @@ import_types_from "base"
 import_types_from "gps_base"
 
 using_library 'imu_advanced_navigation_anpp'
+import_types_from "imu_advanced_navigation_anpp/Constants.hpp"
 import_types_from "imu_advanced_navigation_anpp/Configuration.hpp"
 import_types_from "imu_advanced_navigation_anpp/Status.hpp"
+import_types_from "imu_advanced_navigation_anpp/NorthSeekingInitializationStatus.hpp"
 import_types_from "Periods.hpp"
 
 # The driver task

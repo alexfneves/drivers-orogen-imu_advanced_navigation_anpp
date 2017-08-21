@@ -29,6 +29,7 @@ namespace imu_advanced_navigation_anpp{
         void processIO();
 
         Periods mPeriods;
+        Status mStatus;
         Driver* mDriver;
 
     public:
