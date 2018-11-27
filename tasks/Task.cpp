@@ -91,7 +91,9 @@ void Task::processIO()
         if (!mStatus.isNavigationInitialized())
         {
             rbs.invalidatePosition();
+            rbs.invalidatePositionCovariance();
             rbs.invalidateVelocity();
+            rbs.cov_orientation(2, 2) = (M_PI * M_PI);
         }
         if (mStatus.isOrientationInitialized())
             _nwu_pose_samples.write(rbs);
