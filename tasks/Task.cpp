@@ -84,21 +84,6 @@ void Task::processIO()
         _status.write(mStatus);
     }
 
-    if (period == mPeriods.world_pose)
-    {
-        base::samples::RigidBodyState rbs = mDriver->getWorldRigidBodyState();
-        rbs.sourceFrame = _imu_frame.get();
-        rbs.targetFrame = _nwu_frame.get();
-        if (!mStatus.isNavigationInitialized())
-        {
-            rbs.invalidatePosition();
-            rbs.invalidatePositionCovariance();
-            rbs.invalidateVelocity();
-            rbs.cov_orientation(2, 2) = (M_PI * M_PI);
-        }
-        if (mStatus.isOrientationInitialized())
-            _nwu_pose_samples.write(rbs);
-    }
     if (period == mPeriods.body_velocity)
     {
         base::samples::RigidBodyState rbs = mDriver->getBodyRigidBodyState();
@@ -117,6 +102,34 @@ void Task::processIO()
         base::samples::RigidBodyAcceleration accel = mDriver->getAcceleration();
         _acceleration_samples.write(accel);
     }
+    if (period == mPeriods.world_pose)
+    {
+        base::samples::RigidBodyState rbs = mDriver->getWorldRigidBodyState();
+        base::samples::RigidBodyState bodyRbs = mDriver->getBodyRigidBodyState();
+        rbs.sourceFrame = _imu_frame.get();
+        rbs.targetFrame = _nwu_frame.get();
+        if (mStatus.isNavigationInitialized())
+        {
+            auto orientationMatrix = rbs.orientation.toRotationMatrix();
+            rbs.velocity = rbs.orientation * bodyRbs.velocity;
+            rbs.cov_velocity = orientationMatrix * bodyRbs.cov_velocity;
+            rbs.angular_velocity = rbs.orientation * bodyRbs.angular_velocity;
+            rbs.cov_angular_velocity = orientationMatrix * bodyRbs.cov_angular_velocity;
+        }
+        else
+        {
+            rbs.invalidatePosition();
+            rbs.invalidatePositionCovariance();
+            rbs.invalidateVelocity();
+            rbs.cov_orientation(2, 2) = (M_PI * M_PI);
+        }
+        if (mStatus.isOrientationInitialized())
+        {
+            _nwu_pose_samples.write(rbs);
+        }
+    }
+
+
     if (period == mPeriods.imu_sensors)
     {
         base::samples::IMUSensors sample = mDriver->getIMUSensors();
