@@ -37,6 +37,13 @@ task_context "Task" do
     # Name of the world frame
     property 'nwu_frame', '/std/string'
 
+    # The UTM zone to use
+    property 'utm_zone', 'int', 1
+    # UTM North or South
+    property 'utm_north', 'bool', true
+    # The local origin in local NWU coordinates
+    property 'nwu_origin', '/base/Position'
+
     # The IMU internal status
     output_port 'status', '/imu_advanced_navigation_anpp/Status'
 

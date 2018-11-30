@@ -38,6 +38,7 @@ bool Task::configureHook()
 
     driver->setConfiguration(_configuration.get());
     driver->setUseDeviceTime(_use_device_time.get());
+    driver->setUTM(_utm_zone.get(), _utm_north.get(), _nwu_origin.get());
 
     driver->setStatusPeriod(1);
 
