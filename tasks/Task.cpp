@@ -87,7 +87,7 @@ void Task::processIO()
     if (mStatus.isNavigationInitialized() && period == mPeriods.acceleration)
     {
         base::samples::RigidBodyAcceleration accel = mDriver->getAcceleration();
-        _acceleration_samples.write(accel);
+        _body_acceleration_samples.write(accel);
     }
     if (period == mPeriods.world_pose)
     {

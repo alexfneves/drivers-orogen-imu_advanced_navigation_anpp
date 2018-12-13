@@ -55,11 +55,11 @@ task_context "Task" do
     # It is the pose of the IMU in the NWU frame
     output_port "nwu_pose_samples", "/base/samples/RigidBodyState"
 
-    # Acceleration data
+    # Acceleration data, expressed in the body frame
     #
     # The period at which this value is generated is controlled by the periods
     # property
-    output_port "acceleration_samples", "/base/samples/RigidBodyAcceleration"
+    output_port "body_acceleration_samples", "/base/samples/RigidBodyAcceleration"
 
     # Raw sensors
     #
