@@ -84,19 +84,6 @@ void Task::processIO()
         _status.write(mStatus);
     }
 
-    if (period == mPeriods.body_velocity)
-    {
-        base::samples::RigidBodyState rbs = mDriver->getBodyRigidBodyState();
-        rbs.sourceFrame = _imu_frame.get();
-        rbs.targetFrame = _imu_frame.get();
-        if (!mStatus.isNavigationInitialized())
-        {
-            rbs.invalidatePosition();
-            rbs.invalidateVelocity();
-        }
-        if (mStatus.isOrientationInitialized())
-            _body_velocity_samples.write(rbs);
-    }
     if (mStatus.isNavigationInitialized() && period == mPeriods.acceleration)
     {
         base::samples::RigidBodyAcceleration accel = mDriver->getAcceleration();
@@ -113,7 +100,7 @@ void Task::processIO()
             auto orientationMatrix = rbs.orientation.toRotationMatrix();
             rbs.velocity = rbs.orientation * bodyRbs.velocity;
             rbs.cov_velocity = orientationMatrix * bodyRbs.cov_velocity;
-            rbs.angular_velocity = rbs.orientation * bodyRbs.angular_velocity;
+            rbs.angular_velocity = bodyRbs.angular_velocity;
             rbs.cov_angular_velocity = orientationMatrix * bodyRbs.cov_angular_velocity;
         }
         else
