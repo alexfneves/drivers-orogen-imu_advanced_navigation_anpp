@@ -32,6 +32,8 @@ namespace imu_advanced_navigation_anpp{
         Status mStatus;
         Driver* mDriver;
 
+        Eigen::Vector3d std_position;
+
     public:
         /** TaskContext constructor for Task
          * \param name Name of the task. This name needs to be unique to make it identifiable via nameservices.

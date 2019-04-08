@@ -44,6 +44,9 @@ task_context "Task" do
     # The local origin in local NWU coordinates
     property 'nwu_origin', '/base/Position'
 
+    # Standard output when position is invalid
+    property 'std_position', '/base/Vector3d'
+
     # The IMU internal status
     output_port 'status', '/imu_advanced_navigation_anpp/Status'
 

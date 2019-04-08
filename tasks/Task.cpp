@@ -36,6 +36,8 @@ bool Task::configureHook()
     if (! TaskBase::configureHook())
         return false;
 
+    std_position = _std_position.get();
+
     driver->setConfiguration(_configuration.get());
     driver->setUseDeviceTime(_use_device_time.get());
     driver->setUTM(_utm_zone.get(), _utm_north.get(), _nwu_origin.get());
@@ -112,6 +114,8 @@ void Task::processIO()
         }
         if (mStatus.isOrientationInitialized())
         {
+            if (rbs.position.hasNaN())
+                rbs.position = std_position;
             _nwu_pose_samples.write(rbs);
         }
     }
